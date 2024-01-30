@@ -10,7 +10,7 @@
         android:id="@+id/btn_getCityID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="City ID"
+        android:text="Author"
         app:layout_constraintEnd_toStartOf="@+id/btn_getWeatherByCityID"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

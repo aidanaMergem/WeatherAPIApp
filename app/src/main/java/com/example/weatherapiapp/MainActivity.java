@@ -15,10 +15,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,21 +51,43 @@ public class MainActivity extends AppCompatActivity {
 // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
 
-            String url = "https://api.api-ninjas.com/v1/jokes";
+            String url = "https://poetrydb.org//title/"+et_dataInput.getText().toString();
 
-            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                    response -> Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show(),
-                    error -> Toast.makeText(MainActivity.this, "Error occurred", Toast.LENGTH_LONG).show()) {
-
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
                 @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("X-Api-Key", "7s27hslObwJ7MmmsVa9+uA==JIMBhviExZjDlJMC");
-                    return headers;
+                public void onResponse(JSONArray response) {
+                    String author = "";
+                    try {
+                        JSONObject poetryInfo = response.getJSONObject(0);
+                        author = poetryInfo.getString("author");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    Toast.makeText(MainActivity.this,"Author: "+ author, Toast.LENGTH_LONG).show();
                 }
-            };
+            },
+
+                    error -> {
+                        Toast.makeText(MainActivity.this, "Error occurred!", Toast.LENGTH_LONG).show();
+                    });
 
             queue.add(request);
+
+
+
+//            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+//                    response -> Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_LONG).show(),
+//                    error -> Toast.makeText(MainActivity.this, "Error occurred", Toast.LENGTH_LONG).show()) {
+//
+//                @Override
+//                public Map<String, String> getHeaders() throws AuthFailureError {
+//                    Map<String, String> headers = new HashMap<>();
+//                    headers.put("X-Api-Key", "7s27hslObwJ7MmmsVa9+uA==JIMBhviExZjDlJMC");
+//                    return headers;
+//                }
+//            };
+//
+//            queue.add(request);
 
 //// Request a string response from the provided URL.
 //            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
